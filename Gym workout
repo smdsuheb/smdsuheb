@@ -1,0 +1,189 @@
+File structure:*
+
+```
+- components
+  - Workout.js
+  - Exercise.js
+  - Routine.js
+- screens
+  - Home.js
+  - WorkoutDetails.js
+  - CustomRoutine.js
+- utils
+  - api.js
+  - storage.js
+- App.js
+- package.json
+```
+
+
+*App.js:*
+```
+jsx
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Home from './screens/Home';
+import WorkoutDetails from './screens/WorkoutDetails';
+import CustomRoutine from './screens/CustomRoutine';
+
+const Tab = createBottomTabNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Workout Details" component={WorkoutDetails} />
+        <Tab.Screen name="Custom Routine" component={CustomRoutine} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
+```
+
+
+*Home.js:*
+```
+jsx
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import Workout from '../components/Workout';
+
+const Home = () => {
+  return (
+    <View>
+      <Text>Workout Categories</Text>
+      <Workout category="Strength Training" />
+      <Workout category="Cardio" />
+      <Workout category="Yoga" />
+      <Button title="Create Custom Routine" onPress={() => navigation.navigate('CustomRoutine')} />
+    </View>
+  );
+};
+
+export default Home;
+```
+
+
+*WorkoutDetails.js:*
+```
+jsx
+import React from 'react';
+import { View, Text } from 'react-native';
+import Exercise from '../components/Exercise';
+
+const WorkoutDetails = ({ route }) => {
+  const workout = route.params.workout;
+
+  return (
+    <View>
+      <Text>{workout.name}</Text>
+      {workout.exercises.map((exercise, index) => (
+        <Exercise key={index} exercise={exercise} />
+      ))}
+    </View>
+  );
+};
+
+export default WorkoutDetails;
+```
+
+
+*CustomRoutine.js:*
+```
+jsx
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+import Routine from '../components/Routine';
+
+const CustomRoutine = () => {
+  const [routine, setRoutine] = useState({});
+
+  return (
+    <View>
+      <Text>Create Custom Routine</Text>
+      <Routine onChange={(routine) => setRoutine(routine)} />
+      <Button title="Save Routine" onPress={() => console.log(routine)} />
+    </View>
+  );
+};
+
+export default CustomRoutine;
+```
+
+
+*components/Workout.js:*
+```
+jsx
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Workout = ({ category }) => {
+  return (
+    <View>
+      <Text>{category}</Text>
+      <Button title="View Exercises" onPress={() => navigation.navigate('WorkoutDetails', { workout: { name: category, exercises: [...] } })} />
+    </View>
+  );
+};
+
+export default Workout;
+```
+
+
+*components/Exercise.js:*
+```
+jsx
+import React from 'react';
+import { View, Text } from 'react-native';
+
+const Exercise = ({ exercise }) => {
+  return (
+    <View>
+      <Text>{exercise.name}</Text>
+      <Text>Sets: {exercise.sets}</Text>
+      <Text>Reps: {exercise.reps}</Text>
+    </View>
+  );
+};
+
+export default Exercise;
+```
+
+
+*components/Routine.js:*
+```
+jsx
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Routine = ({ onChange }) => {
+  const [exercises, setExercises] = useState([]);
+
+  return (
+    <View>
+      <Text>Routine</Text>
+      {exercises.map((exercise, index) => (
+        <Exercise key={index} exercise={exercise} />
+      ))}
+      <Button title="Add Exercise" onPress={() => setExercises([...exercises, { name: '', sets: 0, reps: 0 }])} />
+      <Button title="Remove Exercise" onPress={() => setExercises(exercises.slice(0, -1))} />
+      {onChange({ exercises })}
+    </View>
+  );
+};
+
+export default Routine;
+```
+
+
+This code provides basic navigation, workout category selection, workout details, custom routine creation, and exercise management.
+
+
+*Next steps:*
+
+1. Expand exercise library.
+2. Implement workout tracking and
